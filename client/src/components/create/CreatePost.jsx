@@ -107,6 +107,7 @@ const CreatePost = () => {
       return;
     }
     await API.createPost(post);
+    setPost(initialPost);
     navigate("/");
   };
 
