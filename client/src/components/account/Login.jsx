@@ -64,8 +64,8 @@ const Error = styled(Typography)`
 `;
 
 const loginInitialValues = {
-  username: "",
-  password: "",
+  username: "User123",
+  password: "12345",
 };
 
 const signupInitialValues = {
