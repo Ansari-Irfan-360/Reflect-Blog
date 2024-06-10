@@ -1,7 +1,7 @@
 import grid from 'gridfs-stream';
 import mongoose from 'mongoose';
 
-const url = 'https://reflect-ibvy.onrender.com';
+const url = 'https://reflect-360.onrender.com';
 
 
 let gfs, gridfsBucket;
