@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
-
-import { TextField, Box, Button, Typography, styled } from "@mui/material";
+import {
+  TextField,
+  Box,
+  Button,
+  Typography,
+  styled,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import imageURL from "../../images/Logo.png";
 import { useNavigate } from "react-router-dom";
-
 import { API } from "../../service/api";
 import { DataContext } from "../../context/DataProvider";
 
@@ -64,8 +71,8 @@ const Error = styled(Typography)`
 `;
 
 const loginInitialValues = {
-  username: "User123",
-  password: "12345",
+  username: "",
+  password: "",
 };
 
 const signupInitialValues = {
@@ -80,12 +87,15 @@ const Login = ({ isUserAuthenticated }) => {
   const [error, showError] = useState("");
   const [account, toggleAccount] = useState("login");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+
   const navigate = useNavigate();
   const { setAccount } = useContext(DataContext);
 
   useEffect(() => {
     showError("");
-  }, [login,signup]);
+  }, [login, signup]);
 
   const onValueChange = (e) => {
     setLogin({ ...login, [e.target.name]: e.target.value });
@@ -143,6 +153,10 @@ const Login = ({ isUserAuthenticated }) => {
     }
   };
 
+  const handleClickShowPassword = () => setShowPassword(!showPassword);
+  const handleClickShowSignupPassword = () =>
+    setShowSignupPassword(!showSignupPassword);
+
   const toggleSignup = () => {
     account === "signup" ? toggleAccount("login") : toggleAccount("signup");
     showError("");
@@ -167,10 +181,23 @@ const Login = ({ isUserAuthenticated }) => {
             />
             <TextField
               variant="standard"
+              type={showPassword ? "text" : "password"}
               value={login.password}
               onChange={(e) => onValueChange(e)}
               name="password"
               label="Enter Password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             {error && <Error>{error}</Error>}
@@ -204,10 +231,23 @@ const Login = ({ isUserAuthenticated }) => {
             />
             <TextField
               variant="standard"
+              type={showSignupPassword ? "text" : "password"}
               value={signup.password}
               onChange={(e) => onInputChange(e)}
               name="password"
               label="Enter Password"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowSignupPassword}
+                    >
+                      {showSignupPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {error && <Error>{error}</Error>}
             <SignupButton onClick={() => signupUser()}>Signup</SignupButton>
