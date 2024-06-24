@@ -56,3 +56,7 @@ export const logoutUser = async (request, response) => {
 
     response.status(204).json({ msg: 'logout successfull' });
 }
+
+export const checkServer = async (request, response) => {
+    response.status(200).json({msg:"Server is running"});
+}
