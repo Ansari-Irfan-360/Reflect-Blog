@@ -8,6 +8,7 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
+import toast from "react-hot-toast";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import imageURL from "../../images/Logo.png";
 import { useNavigate } from "react-router-dom";
@@ -92,6 +93,43 @@ const Login = ({ isUserAuthenticated }) => {
 
   const navigate = useNavigate();
   const { setAccount } = useContext(DataContext);
+
+  useEffect(() => {
+    let intervalId;
+    let loadingToastId;
+    const startServer = async () => {
+      try {
+        await API.check();
+      } catch {
+        loadingToastId = toast.loading("Starting the Server");
+        intervalId = setInterval(async () => {
+          try {
+            await API.check();
+            toast.success("Server Started", {
+              id: loadingToastId,
+            });
+            clearInterval(intervalId);
+          } catch (error) {
+            console.log("Server not started yet, retrying...");
+          }
+        }, 5000);
+      }
+
+      // Stop polling after 30 seconds
+      setTimeout(() => {
+        clearInterval(intervalId);
+        toast.error("Failed to start server",{
+          id: loadingToastId,
+        });
+        navigate("/");
+      }, 100000);
+    };
+
+    startServer();
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
 
   useEffect(() => {
     showError("");
