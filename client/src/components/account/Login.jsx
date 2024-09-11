@@ -14,6 +14,7 @@ import imageURL from "../../images/Logo.png";
 import { useNavigate } from "react-router-dom";
 import { API } from "../../service/api";
 import { DataContext } from "../../context/DataProvider";
+import { clientCheck } from 'poll-server-check';
 
 const Component = styled(Box)`
   width: 400px;
@@ -82,6 +83,8 @@ const signupInitialValues = {
   password: "",
 };
 
+const BackendURL = 'https://reflect-360.onrender.com';
+
 const Login = ({ isUserAuthenticated }) => {
   const [login, setLogin] = useState(loginInitialValues);
   const [signup, setSignup] = useState(signupInitialValues);
@@ -95,40 +98,7 @@ const Login = ({ isUserAuthenticated }) => {
   const { setAccount } = useContext(DataContext);
 
   useEffect(() => {
-    let intervalId;
-    let loadingToastId;
-    const startServer = async () => {
-      try {
-        await API.check();
-      } catch {
-        loadingToastId = toast.loading("Starting the Server");
-        intervalId = setInterval(async () => {
-          try {
-            await API.check();
-            toast.success("Server Started", {
-              id: loadingToastId,
-            });
-            clearInterval(intervalId);
-          } catch (error) {
-            console.log("Server not started yet, retrying...");
-          }
-        }, 5000);
-      }
-
-      // Stop polling after 30 seconds
-      setTimeout(() => {
-        clearInterval(intervalId);
-        toast.error("Failed to start server",{
-          id: loadingToastId,
-        });
-        navigate("/");
-      }, 100000);
-    };
-
-    startServer();
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
+    clientCheck(BackendURL);
   }, []);
 
   useEffect(() => {
